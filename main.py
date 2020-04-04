@@ -1,7 +1,5 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 from neural_network import NeuralNetwork
 
 
