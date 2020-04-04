@@ -5,13 +5,13 @@ ReLu is mainly used to perform threshold operation to each input elem where val 
 Softmax is mainly used for multi-class problem
 '''
 #def sigmoid = lambda x: 1 / (1 + np.exp(-x))
-def sigmoid(x):
-    return (1/(1 + np.exp(-x)))
+def sigmoid(x): return (1/(1 + np.exp(-x)))
 
-def relu(x):
-    return np.maximum(0,x)
+def relu(x): return np.maximum(0,x)
 
 def softmax(x):
     exp = np.exp(x)
     exp_sum = np.sum(np.exp(x))
     return exp/exp_sum
+
+def sigmoid_derivative(x): return (sigmoid(x)*(1-sigmoid(x)))

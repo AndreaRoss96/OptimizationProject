@@ -2,12 +2,24 @@ import pandas as pd
 import numpy as np
 
 class NeuralNetwork:
-    def __init__(self, x, y):
-        self.input      = x
-        self.weights1   = np.random.rand(self.input.shape[1],4)
-        self.weights2   = np.random.rand(4,1)
-        self.y          = y
+    def __init__(self, layer_dimensions: List[int] = [], functions: List[str] = []):
+        '''
+        Initializes network's weights and activation functions
+
+        layer_dimensions: dimensions of each layer
+        functions: activation function for each layer
+
+        self parameters
+
+        '''
+        self.input      = layer_dimensions[0]
+        self.y          = layer_dimensions[-1] # last layer of the array
         self.output     = np.zeros(self.y.shape)
+
+        self.weights    = []
+        for i in range(1, len(layer_dimensions)):
+            w.append(np.random.rand(layer_dimensions[i-1],layer_dimensions[i]))
+
 
     def feedforward(self):
         self.layer1 = sigmoid(np.dot(self.input, self.weights1))
