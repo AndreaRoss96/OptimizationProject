@@ -52,10 +52,14 @@ class NeuralNetwork:
     a batch size can be set to obtain a batch stocastic GD"""
     def fit(input_train, output_train, input_val, epoch, batch_size=0):
         #creating the gradient table
+        if batch_size is not 0:
+            batchs = [input_train[x:x+batch_size] for x in range(0, len(input_train), batch_size)]
+        else:
+            batchs = [input_train]
         for i in range(1, self.n_layers):
             self.gradient.append(np.zeros(layers[i-1],layers[i]))
-        #TODO: dividi il training set in batch
-        update_batch(batch,true_out)
+        for batch in batchs:
+            update_batch(batch,true_out)
 
 
     """for each batch the gradient table is computed and the weights are updated"""
