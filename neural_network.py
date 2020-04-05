@@ -1,40 +1,48 @@
 import pandas as pd
 import numpy as np
+import functions
 
 class NeuralNetwork:
-    def __init__(self, layer_dimensions: List[int] = [], functions: List[str] = []):
+    def __init__(self, layers, functions):
         '''
         Initializes network's weights and activation functions
 
-        layer_dimensions: dimensions of each layer
+        layers: dimensions of each layer
         functions: activation function for each layer
 
         self parameters
         input: input layer
-        weights: stores the weights between each layer
-        output, y: output layer
+        weights - array of arrays: stores the weights between each layer
+        # output, y: output layer -- cancelled
         functions: activation function on each layer
                     (if functions are less than layers, the functions list will be filled with the last function of the list)
-        z[i]: neuron value
+        z - array of arrays: contains all the neuron of each hidden layer and output layer
+        a - array of arrays: activation value at hidden layer
         '''
-        self.input      = layer_dimensions[0]
-        self.y          = layer_dimensions[-1] # last layer of the array
-        self.output     = np.zeros(self.y.shape)
+        self.layers     = layers
+        self.n_layers   = len(self.layers)
+        self.input      = layers[0]
+        # self.y          = layers[-1] # last layer of the array
+        # self.output     = np.zeros(self.y.shape)
         self.functions  = functions
-        self.weights    = []
+        self.weights, self.z = [], []
+        self.a          = [[np.zeros(layers[0])]] # initialization activation value of the input layer
 
-        for i in range(1, len(layer_dimensions)):
+        for i in range(1, self.n_layers):
             # random initialization of weights
-            self.weights.append(np.random.rand(layer_dimensions[i-1],layer_dimensions[i]))
+            self.weights.append(np.random.rand(layers[i-1],layers[i]))
+            self.z.append(np.zeros(self.layers[i]))
+            self.a.append(np.zeros(self.layers[i]))
 
-        for len(self.functions) < len(layer_dimensions)-1 :
+        for _ in range(len(self.functions), self.n_layers-1) :
             # to fill the list of function, in case these are less than the number of layer
             self.functions.append(self.functions[-1])
 
     def feedforward(self):
-        # # TODO:  salva lo stato dei nodi (z)
-        self.layer1 = sigmoid(np.dot(self.input, self.weights1))
-        self.output = sigmoid(np.dot(self.layer1, self.weights2))
+        for i in range(0, self.n_layers-1):
+            self.z[i] = np.dot(self.a[i], self.weights[i])
+            vectFunc = np.vectorize(self.functions[i]) # vectorization of the layer's activation function
+            self.a[i+1] = vectFunc(self.z[i])
 
     def backprop(self):
         # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
@@ -48,4 +56,4 @@ class NeuralNetwork:
         self.weights1 += d_weights1
         self.weights2 += d_weights2
 
-    def weights_derivative(self, curr_weight, current_layer ):
+    #def weights_derivative(self, curr_weight, current_layer ):

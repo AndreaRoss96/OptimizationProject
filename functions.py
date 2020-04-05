@@ -15,3 +15,7 @@ def softmax(x):
     return exp/exp_sum
 
 def sigmoid_derivative(x): return (sigmoid(x)*(1-sigmoid(x)))
+
+def reluderiv(x):
+  if x >= 0: return 1
+  else: return 0
