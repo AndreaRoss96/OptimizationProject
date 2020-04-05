@@ -66,7 +66,7 @@ class NeuralNetwork:
             feedforward()
             backprop(true_out[i])
         self.gradient /= n_batch
-        self.w += self.gradient
+        self.weights += self.gradient
 
 
     def backprop(self, true_out):
@@ -74,11 +74,11 @@ class NeuralNetwork:
         but in a different way for the output layer that needs to use the
         derivative of the loss function"""
         vectFuncDer = np.vectorize(derivative(self.function[-1]))
-        self.partial_deri[-1] = loss_f_deriv(true_out, self.a[-1])*vectFuncDer(z[-1])
+        self.partial_deri[-1] = loss_f_deriv(true_out, self.a[-1])*vectFuncDer(self.z[-1])
 
         for i in range(slef.n_layers-2, 0,-1):
             vectFuncDer = np.vectorize(derivative(self.function[i]))
-            self.partial_deri[i] = np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(z[i])
+            self.partial_deri[i] = np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i])
 
         #updating the gradient matrix
         for i in range(self.n_layers):
