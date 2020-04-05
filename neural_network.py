@@ -33,7 +33,6 @@ class NeuralNetwork:
         for i in range(1, self.n_layers):
             # random initialization of weights
             self.weights.append(np.random.rand(layers[i-1],layers[i]))
-            self.gradient.append(np.zeros(layers[i-1],layers[i]))
             self.z.append(np.zeros(self.layers[i]))
             self.a.append(np.zeros(self.layers[i]))
             #initialization of the partial derivatives
@@ -49,28 +48,39 @@ class NeuralNetwork:
             vectFunc = np.vectorize(self.functions[i]) # vectorization of the layer's activation function
             self.a[i+1] = vectFunc(self.z[i])
 
-    def fit(input_train, input_val, epoch, n_batch=0):
-        pass
+    """fit NN with the training model_selection
+    a batch size can be set to obtain a batch stocastic GD"""
+    def fit(input_train, output_train, input_val, epoch, batch_size=0):
+        #creating the gradient table
+        for i in range(1, self.n_layers):
+            self.gradient.append(np.zeros(layers[i-1],layers[i]))
+        #TODO: dividi il training set in batch
+        update_batch(batch,true_out)
 
+
+    """for each batch the gradient table is computed and the weights are updated"""
     def update_batch(self, batch, true_out):
         n_batch = len(batch)
         for i in range(n_batch):
+            self.intput[:] = batch[i]
             feedforward()
-            backprop()
+            backprop(true_out[i])
+        self.gradient /= n_batch
+        self.w += self.gradient
 
 
-
-    def backprop(self):
-        # application of the chain rule to find derivative of the loss function with respect to weights2 and weights1
-        # The partial derivative of the outer layer depends on the loss function
+    def backprop(self, true_out):
+        """the partial derivative is computed in the same way for every hidden layers
+        but in a different way for the output layer that needs to use the
+        derivative of the loss function"""
         vectFuncDer = np.vectorize(derivative(self.function[-1]))
-        self.partial_deri[-1] = loss_f_deriv(self.true_out, self.a[-1])*vectFuncDer(z[-1])
+        self.partial_deri[-1] = loss_f_deriv(true_out, self.a[-1])*vectFuncDer(z[-1])
 
         for i in range(slef.n_layers-2, 0,-1):
             vectFuncDer = np.vectorize(derivative(self.function[i]))
             self.partial_deri[i] = np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(z[i])
 
-        #updating
+        #updating the gradient matrix
         for i in range(self.n_layers):
             for j in range(self.w.shape[0]):
                 for k in range(self.w.shape[1]):
