@@ -51,7 +51,7 @@ class NeuralNetwork:
 
     """fit NN with the training model_selection
     a batch size can be set to obtain a batch stocastic GD"""
-    def fit(input_train, output_train, epoch=0, batch_size=0, error_funct = "mean_squared_error"):
+    def fit(self, input_train, output_train, epoch=0, batch_size=0, error_funct = "mean_squared_error"):
         #creating the gradient table
         self.error_funct = error_funct
         if batch_size != 0:
@@ -61,11 +61,11 @@ class NeuralNetwork:
             batches = [input_train]
             outputs = [output_train]
         for i in range(1, self.n_layers):
-            self.gradient.append(np.zeros(layers[i-1],layers[i]))
+            self.gradient.append(np.zeros([self.layers[i-1],self.layers[i]]))
         #The error variable is a list of the means of the errors of the single batches
         self.errors = []
         for batch, output_train in zip(batches, outputs):
-            update_batch(batch,output_train)
+            self.update_batch(batch.values.tolist(),output_train.values.tolist())
 
 
     """for each batch the gradient table is computed and the weights are updated"""
@@ -74,9 +74,9 @@ class NeuralNetwork:
         #batch_error contains the errors of the inputs in the batch
         batch_error = []
         for i in range(n_batch):
-            self.intput[:] = batch[i]
-            feedforward()
-            backpropagation(true_out[i])
+            self.a[0] = copy(batch[i])
+            self.feedforward()
+            self.backpropagation(true_out[i])
             batch_error.append(error_function_getter(self.error_funct)(true_out, a[-1]))
         #this steps calculates the mean of the gradients of the batch and adds it to the weights
         self.gradient /= n_batch
@@ -84,8 +84,8 @@ class NeuralNetwork:
         self.errors.append(np.mean(batch_error))
 
     def predict(self, input):
-        self.intput[:] = input
-        feedforward()
+        self.input[:] = input
+        self.feedforward()
         return copy(a[-1])
 
 
@@ -93,17 +93,23 @@ class NeuralNetwork:
         but in a different way for the output layer that needs to use the
         derivative of the loss function"""
     def backpropagation(self, true_out):
-        vectFuncDer = np.vectorize(derivative(self.function[-1]))
+        vectFuncDer = np.vectorize(derivative(self.functions[-1]))
         error_funct_derivative = error_f_deriv_getter(self.error_funct)
 
-        self.partial_deri[-1] = error_funct_derivative(true_out, self.a[-1])*vectFuncDer(self.z[-1])
+        self.partial_deri[-1] = error_funct_derivative(true_out, self.a[-1])*error_funct_derivative(self.z[-1])
 
-        for i in range(slef.n_layers-3, 0,-1):
-            vectFuncDer = np.vectorize(derivative(self.function[i]))
+        for i in range(self.n_layers-3, -1,-1):
+            vectFuncDer = np.vectorize(derivative(self.functions[i]))
+            print(np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i]))
             self.partial_deri[i] = np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i])
 
+        print("partial deriv \n")
+        print(self.partial_deri)
+
+        print("a \n")
+        print(self.a)
         #updating the gradient matrix
-        for i in range(self.n_layers):
-            for j in range(self.w.shape[0]):
-                for k in range(self.w.shape[1]):
-                    self.gradient[i][j][k] += self.partial_deri[j]  * self.a[k]
+        for i in range(len(self.weights)):
+            for j in range(len(self.weights[i])):
+                for k in range(len(self.weights[i][j])):
+                    self.gradient[i][j][k] += self.partial_deri[k]  * self.a[j]

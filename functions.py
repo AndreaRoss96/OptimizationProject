@@ -78,7 +78,7 @@ def error_function_getter(func):
 def error_f_deriv_getter(func):
     options = {
         "mean_squared_error": mean_squared_error_der,
-        "cross_entropy":cross_entropy_der,
+        "cross_entropy":mean_squared_error_der,
     }
     return options.get(func.lower())
 
