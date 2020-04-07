@@ -56,15 +56,16 @@ class NeuralNetwork:
         self.error_funct = error_funct
         if batch_size != 0:
             batches = [input_train[x:x+batch_size] for x in range(0, len(input_train), batch_size)]
+            outputs = [output_train[x:x+batch_size] for x in range(0, len(output_train), batch_size)]
         else:
             batches = [input_train]
+            outputs = [output_train]
         for i in range(1, self.n_layers):
             self.gradient.append(np.zeros(layers[i-1],layers[i]))
         #The error variable is a list of the means of the errors of the single batches
         self.errors = []
-        for batch in batches:
-            update_batch(batch,true_out)
-            batch_error.append(error_function_getter(self.error_funct)(true_out, a[-1]))
+        for batch, output_train in zip(batches, outputs):
+            update_batch(batch,output_train)
 
 
     """for each batch the gradient table is computed and the weights are updated"""
