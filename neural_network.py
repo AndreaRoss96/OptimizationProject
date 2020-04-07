@@ -82,12 +82,13 @@ class NeuralNetwork:
         return copy(a[-1])
 
 
-    def backpropagation(self, true_out):
         """the partial derivative is computed in the same way for every hidden layers
         but in a different way for the output layer that needs to use the
         derivative of the loss function"""
+    def backpropagation(self, true_out):
         vectFuncDer = np.vectorize(derivative(self.function[-1]))
-        error_funct_derivative = error_f_deriv(self.error_funct)
+        error_funct_derivative = error_f_deriv_getter(self.error_funct)
+
         self.partial_deri[-1] = error_funct_derivative(true_out, self.a[-1])*vectFuncDer(self.z[-1])
 
         for i in range(slef.n_layers-3, 0,-1):

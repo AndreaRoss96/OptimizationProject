@@ -68,14 +68,14 @@ With the string passed as a value it is possible to get the desired function
 '''
 
 
-def error_function(func):
+def error_function_getter(func):
     options = {
         "mean_squared_error": mean_squared_error,
         "cross_entropy":cross_entropy,
     }
     return options.get(func.lower())
 
-def error_f_deriv(func):
+def error_f_deriv_getter(func):
     options = {
         "mean_squared_error": mean_squared_error_der,
         "cross_entropy":cross_entropy_der,
