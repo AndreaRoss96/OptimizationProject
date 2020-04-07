@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import functions
+from functions import *
 from copy import copy
 
 class NeuralNetwork:
@@ -60,24 +60,30 @@ class NeuralNetwork:
             batches = [input_train]
         for i in range(1, self.n_layers):
             self.gradient.append(np.zeros(layers[i-1],layers[i]))
-        self.error = 0
+        #The error variable is a list of the means of the errors of the single batches
+        self.errors = []
         for batch in batches:
             update_batch(batch,true_out)
+            batch_error.append(error_function_getter(self.error_funct)(true_out, a[-1]))
 
 
     """for each batch the gradient table is computed and the weights are updated"""
     def update_batch(self, batch, true_out):
         n_batch = len(batch)
+        #batch_error contains the errors of the inputs in the batch
+        batch_error = []
         for i in range(n_batch):
             self.intput[:] = batch[i]
             feedforward()
             backpropagation(true_out[i])
+            batch_error.append(error_function_getter(self.error_funct)(true_out, a[-1]))
+        #this steps calculates the mean of the gradients of the batch and adds it to the weights
         self.gradient /= n_batch
         self.weights += self.gradient
-        self.error +=
+        self.errors.append(np.mean(batch_error))
 
     def predict(self, input):
-        self.intput[:] = batch[i]
+        self.intput[:] = input
         feedforward()
         return copy(a[-1])
 
