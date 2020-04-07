@@ -53,6 +53,7 @@ class NeuralNetwork:
     a batch size can be set to obtain a batch stocastic GD"""
     def fit(input_train, output_train, input_val, epoch, batch_size=0, error_funct = "mean_squared_error"):
         #creating the gradient table
+        self.error_funct = error_funct
         if batch_size != 0:
             batches = [input_train[x:x+batch_size] for x in range(0, len(input_train), batch_size)]
         else:
@@ -86,7 +87,8 @@ class NeuralNetwork:
         but in a different way for the output layer that needs to use the
         derivative of the loss function"""
         vectFuncDer = np.vectorize(derivative(self.function[-1]))
-        self.partial_deri[-1] = error_f_deriv(true_out, self.a[-1])*vectFuncDer(self.z[-1])
+        error_funct_derivative = error_f_deriv(self.error_funct)
+        self.partial_deri[-1] = error_funct_derivative(true_out, self.a[-1])*vectFuncDer(self.z[-1])
 
         for i in range(slef.n_layers-3, 0,-1):
             vectFuncDer = np.vectorize(derivative(self.function[i]))

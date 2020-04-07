@@ -60,6 +60,14 @@ v COST FUNCTIONS DERIVATIVE v
 def mean_squared_error_der(x, y):
     return 2*( y - x )
 
+
+'''
+Functions selctors
+
+With the string passed as a value it is possible to get the desired function
+'''
+
+
 def error_function(func):
     options = {
         "mean_squared_error": mean_squared_error,
@@ -74,11 +82,6 @@ def error_f_deriv(func):
     }
     return options.get(func.lower())
 
-'''
-Functions selctors
-
-With the string passed as a value it is possible to get the desired function
-'''
 def activation(func):
     options = {
         "sigmoid": sigmoid,
