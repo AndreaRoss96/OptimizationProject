@@ -51,7 +51,7 @@ class NeuralNetwork:
 
     """fit NN with the training model_selection
     a batch size can be set to obtain a batch stocastic GD"""
-    def fit(input_train, output_train, input_val, epoch, batch_size=0, error_funct = "mean_squared_error"):
+    def fit(input_train, output_train, epoch=0, batch_size=0, error_funct = "mean_squared_error"):
         #creating the gradient table
         self.error_funct = error_funct
         if batch_size != 0:
