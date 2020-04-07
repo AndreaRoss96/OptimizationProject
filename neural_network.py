@@ -79,7 +79,9 @@ class NeuralNetwork:
             self.backpropagation(true_out[i])
             batch_error.append(error_function_getter(self.error_funct)(true_out[i], self.a[-1]))
         #this steps calculates the mean of the gradients of the batch and adds it to the weights
-        self.gradient = [self.gradient/n_batch
+        for matrix in self.gradient:
+            for lis in matrix:
+                lis /= n_batch
         self.weights += self.gradient
         self.errors.append(np.mean(batch_error))
 
@@ -102,8 +104,18 @@ class NeuralNetwork:
             print(np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i]))
             self.partial_deri[i] = np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i])
 
+        print("self.weights:  " + str(len(self.weights)))
+        print("self.a:  " + str(len(self.a)))
+        print("self.partial_deri:  " + str(len(self.partial_deri)))
         #updating the gradient matrix
         for i in range(len(self.weights)):
+            print("self.weights[i]:  " + str(len(self.weights[i])))
+            print("self.partial_deri[i]:  " + str(len(self.partial_deri[i])))
+            print("self.a[i]:  " + str(len(self.a[i])))
             for j in range(len(self.weights[i])):
+                print("self.partial_deri[j]:  " + str(len(self.partial_deri[j])))
+                print("self.weights[j]:  " + str(len(self.weights[i])))
                 for k in range(len(self.weights[i][j])):
+                    print("self.weights[k]:  " + str(len(self.weights[i])))
+                    print("self.a[k]:  " + str(len(self.a[i])))
                     self.gradient[i][j][k] += self.partial_deri[i][k]  * self.a[i][j]
