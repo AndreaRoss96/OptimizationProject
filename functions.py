@@ -53,6 +53,26 @@ def cross_entropy(m, a, Y):
     # Y: true values
     return -(1/m) * np.sum(Y*np.log(a) + (1-Y)*np.log(1-a))
 
+'''
+v COST FUNCTIONS DERIVATIVE v
+'''
+
+def mean_squared_error_der(x, y):
+    return 2*( y - x )
+
+def error_function(func):
+    options = {
+        "mean_squared_error": mean_squared_error,
+        "cross_entropy":cross_entropy,
+    }
+    return options.get(func.lower())
+
+def error_f_deriv(func):
+    options = {
+        "mean_squared_error": mean_squared_error_der,
+        "cross_entropy":cross_entropy_der,
+    }
+    return options.get(func.lower())
 
 '''
 Functions selctors

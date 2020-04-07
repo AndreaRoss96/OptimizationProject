@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import functions
+from copy import copy
 
 class NeuralNetwork:
     def __init__(self, layers, functions):
@@ -50,7 +51,7 @@ class NeuralNetwork:
 
     """fit NN with the training model_selection
     a batch size can be set to obtain a batch stocastic GD"""
-    def fit(input_train, output_train, input_val, epoch, batch_size=0):
+    def fit(input_train, output_train, input_val, epoch, batch_size=0, error_funct = "mean_squared_error"):
         #creating the gradient table
         if batch_size != 0:
             batches = [input_train[x:x+batch_size] for x in range(0, len(input_train), batch_size)]
@@ -58,6 +59,7 @@ class NeuralNetwork:
             batches = [input_train]
         for i in range(1, self.n_layers):
             self.gradient.append(np.zeros(layers[i-1],layers[i]))
+        self.error = 0
         for batch in batches:
             update_batch(batch,true_out)
 
@@ -71,6 +73,12 @@ class NeuralNetwork:
             backpropagation(true_out[i])
         self.gradient /= n_batch
         self.weights += self.gradient
+        self.error +=
+
+    def predict(self, input):
+        self.intput[:] = batch[i]
+        feedforward()
+        return copy(a[-1])
 
 
     def backpropagation(self, true_out):
@@ -78,7 +86,7 @@ class NeuralNetwork:
         but in a different way for the output layer that needs to use the
         derivative of the loss function"""
         vectFuncDer = np.vectorize(derivative(self.function[-1]))
-        self.partial_deri[-1] = loss_f_deriv(true_out, self.a[-1])*vectFuncDer(self.z[-1])
+        self.partial_deri[-1] = error_f_deriv(true_out, self.a[-1])*vectFuncDer(self.z[-1])
 
         for i in range(slef.n_layers-3, 0,-1):
             vectFuncDer = np.vectorize(derivative(self.function[i]))
