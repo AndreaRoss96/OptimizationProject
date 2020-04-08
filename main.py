@@ -15,7 +15,7 @@ def main():
             X, Y, train_size=0.33, random_state = seed)
     nn = NeuralNetwork([13,5,5,3], ["relu", "relu", "relu"])
     nn.fit(i_train, o_train, batch_size=5)
-
+    print(nn.errors)
 
 if __name__ == "__main__":
     main()

@@ -74,7 +74,7 @@ class NeuralNetwork:
         #batch_error contains the errors of the inputs in the batch
         batch_error = []
         for i in range(n_batch):
-            self.a[0] = copy(batch[i])
+            self.a[0] = np.array(copy(batch[i]))
             self.feedforward()
             self.backpropagation(true_out[i])
             batch_error.append(error_function_getter(self.error_funct)(true_out[i], self.a[-1]))
@@ -88,7 +88,7 @@ class NeuralNetwork:
     def predict(self, input):
         self.input[:] = input
         self.feedforward()
-        return copy(a[-1])
+        return copy(self.a[-1])
 
 
         """the partial derivative is computed in the same way for every hidden layers
@@ -104,18 +104,8 @@ class NeuralNetwork:
             print(np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i]))
             self.partial_deri[i] = np.dot(self.weights[i+1], self.partial_deri[i+1])*vectFuncDer(self.z[i])
 
-        print("self.weights:  " + str(len(self.weights)))
-        print("self.a:  " + str(len(self.a)))
-        print("self.partial_deri:  " + str(len(self.partial_deri)))
         #updating the gradient matrix
-        for i in range(len(self.weights)):
-            print("self.weights[i]:  " + str(len(self.weights[i])))
-            print("self.partial_deri[i]:  " + str(len(self.partial_deri[i])))
-            print("self.a[i]:  " + str(len(self.a[i])))
-            for j in range(len(self.weights[i])):
-                print("self.partial_deri[j]:  " + str(len(self.partial_deri[j])))
-                print("self.weights[j]:  " + str(len(self.weights[i])))
-                for k in range(len(self.weights[i][j])):
-                    print("self.weights[k]:  " + str(len(self.weights[i])))
-                    print("self.a[k]:  " + str(len(self.a[i])))
+        for i in range(len(self.layers)-1):
+            for j in range(self.layers[i]):
+                for k in range(self.layers[i+1]):
                     self.gradient[i][j][k] += self.partial_deri[i][k]  * self.a[i][j]
